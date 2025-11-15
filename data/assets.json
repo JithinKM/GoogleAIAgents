@@ -1,0 +1,33 @@
+[
+  {
+    "id": "disk-1",
+    "type": "disk",
+    "attached": false,
+    "project": "proj-1",
+    "size_gb": 100,
+    "estimated_monthly_cost": 5.5
+  },
+  {
+    "id": "ip-1",
+    "type": "static-ip",
+    "attached": false,
+    "project": "proj-2",
+    "estimated_monthly_cost": 7.2
+  },
+  {
+    "id": "vm-prod-1",
+    "type": "vm",
+    "attached": true,
+    "project": "proj-2",
+    "cpu": 8,
+    "ram_gb": 32
+  },
+  {
+    "id": "vm-dev-1",
+    "type": "vm",
+    "attached": true,
+    "project": "proj-1",
+    "cpu": 2,
+    "ram_gb": 8
+  }
+]

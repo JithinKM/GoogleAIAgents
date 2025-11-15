@@ -9,12 +9,8 @@ runner = None  # global runner
 def setUp():
     global runner
     try:
-        # Prefer to set GOOGLE_API_KEY externally (shell, key manager).
-        API_KEY = os.getenv("GOOGLE_API_KEY", None)
-        if not API_KEY:
-            # For quick testing only: set here (not recommended for real projects)
-            API_KEY = ""
-            os.environ["GOOGLE_API_KEY"] = API_KEY
+        API_KEY = ""
+        os.environ["GOOGLE_API_KEY"] = API_KEY
 
         os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "FALSE"
         print("Gemini API key setup complete.")
