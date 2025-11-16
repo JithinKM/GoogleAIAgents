@@ -12,7 +12,7 @@ from typing import List
 import pandas as pd
 
 
-os.environ["GOOGLE_API_KEY"] = ""
+os.environ["GOOGLE_API_KEY"] = "AIzaSyB1fI0K1Wyp0Rl8l7gQAWB6K5rGw1niVnU"
 
 # imports for agent
 from google.adk.agents import LlmAgent
