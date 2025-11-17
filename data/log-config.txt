@@ -1,0 +1,32 @@
+import logging
+from logging.handlers import RotatingFileHandler
+import os
+
+LOG_DIR = "/kaggle/working/logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+LOG_FILE = os.path.join(LOG_DIR, "agent_logs.log")
+
+# 1. Create handler
+file_handler = RotatingFileHandler(
+    LOG_FILE,
+    maxBytes=5_000_000,   # 5 MB
+    backupCount=3
+)
+file_handler.setLevel(logging.ERROR)
+
+# 2. Set formatter
+formatter = logging.Formatter(
+    "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
+)
+file_handler.setFormatter(formatter)
+
+# 3. Attach handler to the ADK logger namespace
+adk_logger = logging.getLogger("google.adk")
+adk_logger.setLevel(logging.INFO)
+adk_logger.addHandler(file_handler)
+
+# Optional: Also attach to runner logger explicitly
+logging.getLogger("google.adk.runner").addHandler(file_handler)
+logging.getLogger("google.adk.plugins").addHandler(file_handler)
+
+print("ADK logging: ", LOG_FILE)
