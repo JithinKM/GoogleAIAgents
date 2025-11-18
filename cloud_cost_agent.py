@@ -12,7 +12,7 @@ from typing import List
 import pandas as pd
 from google.adk.tools import AgentTool
 
-os.environ["GOOGLE_API_KEY"] = ""
+os.environ["GOOGLE_API_KEY"] = "AIzaSyB1fI0K1Wyp0Rl8l7gQAWB6K5rGw1niVnU"
 
 # imports for agent
 from google.adk.agents import LlmAgent
@@ -219,12 +219,11 @@ def sequential_analysis(project_id, days, session_id="session-1"):
             "       {\"title\": \"Cost Spike detected for <project_id>\",\n"
             "        \"body\": \"<short description of spikes and evidence (include usage_start_time & cost)>\"}\n"
             "  3) Regardless of ticket creation, explain the most likely cause of the cost spike. \n\n"
-            "Then provide a prioritized list of safe remediation steps (non-destructive first) in a valid JSON format. \n\n"
-            "Also include one suggested follow-up action that requires human approval in a valid JSON format.\n\n"
+            "Then provide a prioritized list of safe remediation steps (non-destructive first). \n\n"
+            "Also include one suggested follow-up action that requires human approval.\n\n"
             "If the ticket is created, include all the ticket details.\n\n"
             "CONSTRAINTS:\n"
             "  - Use only the fields in billing_rows_for_detector for detection (do not invent additional rows).\n"
-            "  - OUTPUT final JSON.\n\n"
             "Payload:\n" + json.dumps(prompt_payload)
     )
 
