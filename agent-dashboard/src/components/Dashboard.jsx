@@ -1,6 +1,7 @@
 // src/components/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
+import ReactMarkdown from "react-markdown";
 // import ModelChart from "./ModelChart";
 
 export default function Dashboard() {
@@ -106,7 +107,10 @@ export default function Dashboard() {
               ?.map(part => part.text)
               ?? []
           ) ?? [];
-      setAgentResponse(text);
+      console.log("-------------");
+      console.log(text);
+      console.log("-------------");
+      setAgentResponse(text[0]);
 
       // optionally: if your API returns timeseries, pass to chart
       // we assume timeseries is [{x: "2025-11-19", y: 123}, ...]
@@ -147,6 +151,7 @@ export default function Dashboard() {
               onChange={(e) => setProjectId(e.target.value)}
               aria-label="Select project"
             >
+              <option value="" disabled>Select a project</option>
               {projectOptions.map((p) => (
                 <option key={p} value={p}>{p}</option>
               ))}
@@ -198,7 +203,11 @@ export default function Dashboard() {
       <section className="mt-4">
         <h5>Agent response</h5>
         <div className="p-3 rounded-3 border" style={{ background: "#f7f7f7", minHeight: 80, whiteSpace: "pre-wrap" }}>
-          {agentResponse ?? "No response yet — submit the form to run the agent."}
+          <ReactMarkdown>
+              {
+                typeof agentResponse === "string"? agentResponse : "No response yet — submit the form to run the agent."
+              }
+            </ReactMarkdown>
         </div>
       </section>
 
