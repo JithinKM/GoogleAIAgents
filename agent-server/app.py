@@ -1,11 +1,17 @@
-import asyncio
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Any, Dict
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-import json
 
 app = FastAPI(title="Cloud Cost Agent API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Example request shape
 class AgentRequest(BaseModel):

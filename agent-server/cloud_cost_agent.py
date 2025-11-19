@@ -12,7 +12,7 @@ from typing import List
 import pandas as pd
 from google.adk.tools import AgentTool
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyB1fI0K1Wyp0Rl8l7gQAWB6K5rGw1niVnU"
+os.environ["GOOGLE_API_KEY"] = ""
 
 # imports for agent
 from google.adk.agents import LlmAgent
@@ -24,7 +24,7 @@ from google.genai import types
 import data_generator as dg
 
 # Make defaults
-DATA_DIR = Path("data")
+DATA_DIR = Path("../data")
 BILLING_CSV = DATA_DIR / "synthetic_billing.csv"
 METRICS_JSONL = DATA_DIR / "synthetic_metrics.jsonl"
 ASSETS_JSON = DATA_DIR / "assets.json"

@@ -23,7 +23,7 @@ DEFAULT_SEED = 12345
 random.seed(DEFAULT_SEED)
 np.random.seed(DEFAULT_SEED)
 
-OUT_DIR = "data"
+OUT_DIR = "../data"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # helper: map project to a primary service and an instance (so billing anomalies can be correlated to metrics)
