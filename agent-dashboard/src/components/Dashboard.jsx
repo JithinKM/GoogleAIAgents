@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [projectOptions, setProjectOptions] = useState([]);
   const [csvLoading, setCsvLoading] = useState(true);
   const [csvError, setCsvError] = useState(null);
+  const [resultClass, setResultClass] = useState("bg-light");
 
   // Change this to your actual URL if different
   const API_URL = "http://localhost:8080/run-agent";
@@ -111,6 +112,7 @@ export default function Dashboard() {
       console.log(text);
       console.log("-------------");
       setAgentResponse(text[0]);
+      setResultClass("bg-white");
 
       // optionally: if your API returns timeseries, pass to chart
       // we assume timeseries is [{x: "2025-11-19", y: 123}, ...]
@@ -129,7 +131,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 1100 }}>
+    <div className="container my-5" id="mainContainer" style={{ maxWidth: 1100 }}>
       <form onSubmit={handleSubmit} className="row g-3 align-items-end">
         {/* Project dropdown */}
         <div className="col-12 col-md-6">
@@ -202,7 +204,7 @@ export default function Dashboard() {
       {/* Agent response */}
       <section className="mt-4">
         <h5>Agent response</h5>
-        <div className="p-3 rounded-3 border" style={{ background: "#f7f7f7", minHeight: 80, whiteSpace: "pre-wrap" }}>
+        <div className={`${resultClass} p-3 rounded-3 border`}>
           <ReactMarkdown>
               {
                 typeof agentResponse === "string"? agentResponse : "No response yet — submit the form to run the agent."

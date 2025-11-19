@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+body {
+  color: #777 !important;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -45,3 +49,17 @@
 .read-the-docs {
   color: #888;
 }
+
+#user-icon .bi {
+  font-size: 30px;
+  color: #4285F4;
+}
+
+.navbar-brand {
+  color: #4285F4;
+}
+
+#mainContainer {
+  text-align: left;
+}
+
