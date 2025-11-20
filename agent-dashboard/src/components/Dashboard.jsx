@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
 import ReactMarkdown from "react-markdown";
 import ModelChart from "./ModelChart";
+import JsonBarChart from "./JsonBarChart";
 
 export default function Dashboard() {
   const [projectId, setProjectId] = useState("");
@@ -221,7 +222,8 @@ export default function Dashboard() {
       // console.log("------Agent response:-------");
       // console.log(text);
       // console.log("-------------");
-      setAgentResponse(text[0]);
+      const response = text[0]? text[0] : "No cost anomalies detected for the project ${project_id} for the past ${days} days."
+      setAgentResponse(response);
       setAgentHidden("");
     } catch (err) {
       console.error(err);
@@ -302,9 +304,9 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div class="container chart-container text-center">
-        <div class="row align-items-start">
-          <div class="col">
+      <div className="container chart-container text-center">
+        <div className="row align-items-start">
+          <div className="col">
             {/* Chart */}
             <section className={`mt-4 ${hidden}`}>
               <h5>Cost Analysis for the project: {projectId}</h5>
@@ -314,16 +316,20 @@ export default function Dashboard() {
               </div>
             </section>
           </div>
-          <div class="col">
+          <div className="col">
             <section className={`mt-4 ${hidden}`}>
-              <h5>Another chart will come here</h5>
+              <h5>Resource Uage for the last {days} days</h5>
+              <p className="text-muted small">Avg CPU util for the selected window.</p>
+              <div className="p-3 rounded-3 border">
+                <JsonBarChart days={Number(days) || 7} url="/data/synthetic_metrics.jsonl" />
+              </div>
             </section>
           </div>
         </div>
       </div>
 
       {/* Agent response */}
-      <div class="container chart-container">
+      <div className="container chart-container">
         <section className={`mt-4 ${agentHidden}`}>
           <h5>Cost Anomalies Detected</h5>
           <div className="p-3 rounded-3 border">
