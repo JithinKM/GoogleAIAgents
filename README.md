@@ -9,6 +9,7 @@ Anomalies hide inside huge daily billing logs
 Metrics and billing live in different systems
 No one manually monitors dashboards 24/7
 I wanted to build something that can continuously monitor, detect, explain, and take action whenever cloud spending increases unexpectedly. This is a classic FinOps problem, and also one of the best real-world scenarios for intelligent agents.
+<img width="2224" height="1231" alt="image" src="https://github.com/user-attachments/assets/1f1d74ea-ec76-4c99-85ea-d990d11f9da9" />
 
 ## Why agents?
 Traditional monitoring rules are rigid, noisy, and don’t scale.
@@ -64,17 +65,11 @@ Realistic costs + correlated CPU anomalies
 Visualization (matplotlib)
 Clear time-series charts for cost & CPU
 InMemoryRunner
-Clean debugging and replay support
 
 ## The stack:
 - Google ADK
 - Gemini 2.5 Flash Lite
 - Matplotlib
 - Pandas
-- Kaggle Notebook for execution
 
-<img width="2559" height="1217" alt="image" src="https://github.com/user-attachments/assets/6ba00d1e-a266-41a4-ad4c-279543aa4358" />
-
-<img width="2397" height="1228" alt="image" src="https://github.com/user-attachments/assets/52901324-5ce2-4f94-89da-3a6d34c44f6c" />
-
-
+<img width="2191" height="1229" alt="image" src="https://github.com/user-attachments/assets/c2f764cb-389f-41d4-bb35-32a78efc9a01" />
