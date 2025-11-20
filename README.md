@@ -1,5 +1,7 @@
 # Cloud Cost Anomaly Detection & Automated Ticketing Agent
 
+<img width="1080" height="608" alt="image" src="https://github.com/user-attachments/assets/ed2762f4-f785-49ed-9c7f-cc1633001f67" />
+
 Cloud costs are notoriously unpredictable. Teams often realize a spike after the bill arrives — sometimes days or weeks later — which is too late to act. Even small inefficiencies or a single runaway job can cause massive budget overruns.
 
 Three things make this problem particularly salty:
@@ -21,6 +23,7 @@ By combining a main reasoning agent with a specialized spike detector agent and 
 
 ## What I created
 The project is a multi-agent cloud cost anomaly detection system built using Google ADK and synthetic billing + metric datasets.
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/297d7651-6d94-4f99-8a8c-a98c88fd5e56" />
 
 ## Core Components:
 
@@ -69,3 +72,9 @@ Clean debugging and replay support
 - Matplotlib
 - Pandas
 - Kaggle Notebook for execution
+
+<img width="2559" height="1217" alt="image" src="https://github.com/user-attachments/assets/6ba00d1e-a266-41a4-ad4c-279543aa4358" />
+
+<img width="2397" height="1228" alt="image" src="https://github.com/user-attachments/assets/52901324-5ce2-4f94-89da-3a6d34c44f6c" />
+
+
