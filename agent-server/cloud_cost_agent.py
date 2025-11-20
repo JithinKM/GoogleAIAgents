@@ -9,6 +9,8 @@ import time
 from pathlib import Path
 from typing import List
 
+import math
+import numpy as np
 import pandas as pd
 from google.adk.tools import AgentTool
 
@@ -91,6 +93,35 @@ def ticket_create(title: str, body: str):
     }
     return ticket
 
+# --- Added: Forecasting tool for the next 7 days (function_tool) ---
+def forecast_costs(params: dict):
+    rows = params.get("rows") or params.get("billing_rows_for_detector") or []
+    horizon = 7
+    if not rows:
+        return {"forecast": [], "model": "none", "note": "no input rows"}
+    df = pd.DataFrame(rows)
+    df["usage_start_time"] = pd.to_datetime(df["usage_start_time"])
+
+    df = df.sort_values("usage_start_time").reset_index(drop=True)
+    start = df["usage_start_time"].min()
+    df["x"] = (df["usage_start_time"] - start).dt.days.astype(float)
+    y = df["cost"].astype(float).values
+    x = df["x"].astype(float).values
+    w = 2 * math.pi / 7.0
+    A = np.column_stack([np.ones_like(x), x, np.sin(w * x), np.cos(w * x)])
+    try:
+        coeffs, *_ = np.linalg.lstsq(A, y, rcond=None)
+    except Exception:
+        coeffs = np.zeros(A.shape[1])
+    last_x = x[-1]
+    preds = []
+    for i in range(1, horizon + 1):
+        xi = last_x + i
+        vec = np.array([1.0, xi, math.sin(w * xi), math.cos(w * xi)])
+        pred = float(np.dot(vec, coeffs))
+        date = (start + pd.Timedelta(days=int(xi))).strftime("%Y-%m-%d")
+        preds.append({"date": date, "predicted": round(max(pred, 0.0), 2)})
+    return {"forecast": preds, "model": "linear+weekly", "coeffs": [float(c) for c in coeffs]}
 
 # --- Build the agent and runner ---
 def build_cloud_cost_agent():
@@ -104,6 +135,16 @@ def build_cloud_cost_agent():
     # model choice — keep same as your original sample
     model = Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config)
 
+    root_cause_agent = LlmAgent(
+        name="root_cause_agent",
+        model=model,
+        instruction=(
+            "You are a Root Cause Analyzer. INPUT: JSON object with keys: 'project_id', 'spikes', 'recent_metrics'.\n\n"
+            "TASK: Return ONLY a JSON object with keys: {\"root_causes\": [{\"cause\":\"...\", \"confidence\":0.0, \"evidence\":\"...\"}], \"recommendation\":\"short text\" }\n\n"
+            "Constraints: Output must be valid JSON, no extra prose. Provide at least one cause if spikes are non-empty."
+        )
+    )
+
     spike_detector_agent = LlmAgent(
         name="spike_detector_agent",
         model=model,
@@ -111,7 +152,7 @@ def build_cloud_cost_agent():
             "You are a Spike Detector agent. INPUT: JSON array named 'rows' containing objects "
             "with at least 'usage_start_time' and 'cost'.\n\n"
             "TASK: Return a single JSON object ONLY (no prose) with keys:\n"
-            "  {\"spikes\": [<rows that are spikes>], \"reason\": \"short explanation\"}\n\n"
+            "  {\"spikes\": [<rows that are spikes>], \"reason\": \"root cause of the spikes\"}\n\n"
             "Constraints: Output MUST be valid JSON. The 'spikes' list should contain the original "
             "row objects (or objects with usage_start_time and cost). If none, return spikes: [] and reason: 'none'."
         )
@@ -121,19 +162,26 @@ def build_cloud_cost_agent():
         name="cloud_cost_agent",
         model=model,
         instruction=(
-            "You are a Cloud Cost Agent. You will be given project billing rows and recent metrics.\n"
-            "When you need to determine whether there are cost spikes, CALL the `spike_detector_tool` "
-            "with a JSON payload: {\"rows\": [ ... ]}. The spike detector will return JSON: "
-            "{\"spikes\": [...], \"reason\": \"...\"}.\n\n"
-            "If the detector returns spikes (non-empty list), you MUST call ticket_create with "
-            "a JSON payload: {\"title\": ..., \"body\": ...}.\n\n"
-            "Always include a short explanation and recommended safe remediation steps (non-destructive first).\n\n"
+            "You are cloud_cost_agent_ext. You will be given a JSON payload with billing rows and recent metrics.\n\n"
+            "RULES (read carefully):\n"
+            " - Use the exact tool names provided in the agent's tools list.\n"
+            " - When calling a tool, issue a single function_call with VALID JSON arguments only (no markdown/backticks).\n"
+            " - **Do not finish** immediately after any single tool responds. After a tool returns, CONTINUE reasoning and call the next tool(s) as needed.\n"
+            " - Your session should follow this explicit multi-step workflow:\n"
+            "     1) CALL spike_detector_agent with {\"rows\": billing_rows_for_detector}. Wait for its response.\n"
+            "     2) If there are spikes, CALL root_cause_agent with {\"project_id\":..., \"spikes\":<the spikes returned>, \"recent_metrics\": recent_metrics_sample} and wait for its response.\n"
+            "     3) If spikes exist, CALL ticket_create tool with a JSON payload {\"title\":..., \"body\":...} and wait for its response.\n"
+            "     4) CALL forecast_costs tool with a JSON payload {\"rows\": billing_rows_for_detector}. Wait for its response.\n"
+            " - After all required tool calls and responses, produce a FINAL response in plain English.\n\n"
+            "Always follow the workflow above and always return the FINAL result at the end."
         ),
         tools=[
             bq_query_cost_by_project,
             monitoring_fetch_cpu,
             AgentTool(agent=spike_detector_agent),
-            ticket_create
+            AgentTool(agent=root_cause_agent),
+            ticket_create,
+            forecast_costs
         ]
     )
     print("------------- cloud_cost_agent created -------------")
@@ -230,39 +278,6 @@ def sequential_analysis(project_id, days, session_id="session-1"):
     # Return the prompt string for your runner to execute with cloud_cost_agent
     return prompt
 
-
-def extract_final_agent_result(agent_result_json: dict):
-    """
-    Extracts the final LLM output (natural text or JSON) from the agent_result event list.
-    """
-    events = agent_result_json.get("agent_result", [])
-    final_text_blocks = []
-
-    for event in events:
-        content = event.get("content") or {}
-        parts = content.get("parts") or []
-
-        for part in parts:
-            text = part.get("text")
-            if text and text.strip():
-                final_text_blocks.append(text)
-
-    if not final_text_blocks:
-        return None
-
-    # The last meaningful block is the final agent output
-    final_output = final_text_blocks[-1].strip()
-
-    # If wrapped in ```json ... ```, extract inner JSON
-    if final_output.startswith("```"):
-        import re
-        match = re.search(r"```json\s*(.*?)\s*```", final_output, re.DOTALL)
-        if match:
-            return match.group(1).strip()
-
-    response_json = {"result": final_output}
-    return response_json
-
 # --- Async runner invocation ---
 async def run_analysis_with_agent(project_id: str, days: int = 30):
     load_or_generate_data(True)
@@ -279,7 +294,6 @@ async def run_analysis_with_agent(project_id: str, days: int = 30):
     try:
         # run_debug returns detailed output for debugging
         agent_result = await runner.run_debug(prompt)
-        # final_res = extract_final_agent_result(agent_result)
         return {"agent_result": agent_result}
     except Exception as e:
         print("Error running agent:", repr(e))

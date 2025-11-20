@@ -69,9 +69,11 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-right: 7px;
 }
 
 .navbar-brand {
+  padding-left: 7px;
   background: linear-gradient(135deg, #4f46e5, #06b6d4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -109,4 +111,12 @@ body {
 
 .chart-container {
   margin-top: 50px;
+}
+
+.form-control, .form-control:focus {
+  color: #777;
+}
+
+.form-select, .form-select:focus {
+  color: #777;
 }

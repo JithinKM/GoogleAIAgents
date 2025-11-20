@@ -178,9 +178,6 @@ export default function Dashboard() {
 
       // computed.series is array [{x, y}, ...]
       const series = computed.series || [];
-      // console.log("------series-------");
-      // console.log(series)
-      // set chart data
       setTimeseries(series);
       setHidden("");
 
@@ -210,19 +207,15 @@ export default function Dashboard() {
       const data = await res.json();
 
       // show the text response in UI
-      // we tolerate multiple shapes — try to extract message or fallback to raw
-      const text =
-        data?.agent_result
-          ?.flatMap(item =>
-            item?.content?.parts
-              ?.filter(part => typeof part?.text === "string")
-              ?.map(part => part.text)
-              ?? []
-          ) ?? [];
+      const text = (data?.agent_result ?? [])
+        .flatMap(item => item?.content?.parts ?? [])
+        .flatMap(part => typeof part?.text === "string" ? [part.text] : [])
+        .join("\n\n");
+
       // console.log("------Agent response:-------");
       // console.log(text);
       // console.log("-------------");
-      const response = text[0]? text[0] : "No cost anomalies detected for the project ${project_id} for the past ${days} days."
+      const response = text? text : `No cost anomalies detected for the project ${projectId} for the past ${days} days.`
       setAgentResponse(response);
       setAgentHidden("");
     } catch (err) {
