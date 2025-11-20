@@ -1,12 +1,18 @@
+body {
+  color: #777 !important;
+  background-image: url('../public/bg.png');
+  background-repeat: repeat;
+  background-size: 300px;
+  background-position: top left;
+  min-height: calc(100vh - 200px);
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
-}
-
-body {
-  color: #777 !important;
+  background-color: #fff;
+  min-height: calc(100vh - 200px);
 }
 
 .logo {
@@ -22,8 +28,15 @@ body {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/*h1 {
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}*/
+
 .description {
-  color: "#666"
+  color: "#666";
   font-size: 18px;
 }
 
@@ -52,14 +65,48 @@ body {
 
 #user-icon .bi {
   font-size: 30px;
-  color: #4285F4;
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .navbar-brand {
-  color: #4285F4;
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 #mainContainer {
   text-align: left;
 }
 
+.ai-btn {
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  color: white;
+  border: none;
+  padding: 7px;
+  font-size: 16px;
+  border-radius: 10px;
+  transition: 0.25s ease;
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.6);
+}
+
+.ai-btn:hover {
+  color: white;
+  padding: 7px;
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.9);
+}
+
+.ai-btn:disabled {
+  color: white;
+  padding: 7px;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chart-container {
+  margin-top: 50px;
+}

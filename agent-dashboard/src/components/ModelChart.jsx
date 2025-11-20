@@ -1,5 +1,5 @@
 // src/components/ModelChart.jsx
-import React from "react";
+import React, { useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,42 +9,69 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  TimeScale
 } from "chart.js";
+// If you want time scale parsing, you'll need chartjs-adapter-date-fns or luxon
+// import 'chartjs-adapter-date-fns';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale
+);
 
-export default function ModelChart() {
-  // If your API returned timeseries and we saved it on window.__latestTimeseries, use it.
-  const ts = window.__latestTimeseries ?? [
-    // fallback demo data
-    { x: "Day 1", y: 10 },
-    { x: "Day 2", y: 12 },
-    { x: "Day 3", y: 9 },
-    { x: "Day 4", y: 15 }
-  ];
+export default function ModelChart({ timeseries = [] }) {
+  // Ensure we always receive a fresh array — prevents mutation issues upstream
+  const series = Array.isArray(timeseries) ? [...timeseries] : [];
 
-  const labels = ts.map(p => p.x);
-  const data = {
+  // derive labels and numeric values
+  const labels = series.map((p) => p.x ?? "");
+  const values = series.map((p) => (Number.isFinite(p.y) ? p.y : Number(p.y) || 0));
+
+  // memoize data/options so chartjs-2 updates correctly when deps change
+  const data = useMemo(() => ({
     labels,
     datasets: [
       {
-        label: "Metric",
-        data: ts.map(p => p.y),
-        fill: false,
-        tension: 0.25,
-        pointRadius: 4
+        label: "Daily cost",
+        data: values,
+        borderColor: "#4f46e5",         // deep indigo
+        backgroundColor: "rgba(79, 70, 229, 0.2)", 
+        pointBackgroundColor: "#06b6d4", // aqua
+        pointBorderColor: "#06b6d4",
+        tension: 0.3,
+        borderWidth: 2,
+        pointRadius: 4,
       }
-    ]
-  };
+    ],
+  }), [labels.join("|"), values.join(",")]); // join used to create stable primitive deps
 
-  const options = {
+  const options = useMemo(() => ({
     responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: { maxRotation: 45, minRotation: 0 },
+      },
+      y: {
+        beginAtZero: true
+      }
+    },
     plugins: {
       legend: { position: "top" },
-      title: { display: false, text: "Model timeseries" }
+      tooltip: { mode: "index", intersect: false }
     }
-  };
+  }), []);
 
-  return <div style={{maxWidth:800}}><Line data={data} options={options} /></div>;
+  return (
+    <div style={{ width: "100%", height: 360 }}>
+      <Line data={data} options={options} />
+    </div>
+  );
 }

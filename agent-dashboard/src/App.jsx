@@ -20,7 +20,7 @@ export default function App() {
       >
         <header className="container my-5 text-center" style={{ maxWidth: 1100 }}>
           <h1>Project Dashboard</h1>
-          <p class="description">
+          <p className="description">
             Select the project and the number of days you want to check for cost anomalies.
             The Cloud Cost Agent will analyze the spend, highlight anomalies,
             identify root causes, suggest follow-up actions, and even create a ticket if needed.
