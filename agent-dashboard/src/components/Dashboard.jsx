@@ -215,7 +215,7 @@ export default function Dashboard() {
       // console.log("------Agent response:-------");
       // console.log(text);
       // console.log("-------------");
-      const response = text? text : `No cost anomalies detected for the project ${projectId} for the past ${days} days.`
+      const response = text? text : `No response from agent.`
       setAgentResponse(response);
       setAgentHidden("");
     } catch (err) {
