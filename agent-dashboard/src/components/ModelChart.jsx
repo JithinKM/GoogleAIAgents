@@ -44,9 +44,9 @@ export default function ModelChart({ timeseries = [] }) {
       {
         label: "Daily cost",
         data: values,
-        borderColor: "#4f46e5",         // deep indigo
-        backgroundColor: "rgba(79, 70, 229, 0.2)",
-        pointBackgroundColor: "#06b6d4", // aqua
+        borderColor: "#6366f1",         // Indigo 500
+        backgroundColor: "rgba(99, 102, 241, 0.2)",
+        pointBackgroundColor: "#06b6d4", // Cyan 500
         pointBorderColor: "#06b6d4",
         tension: 0.3,
         borderWidth: 2,

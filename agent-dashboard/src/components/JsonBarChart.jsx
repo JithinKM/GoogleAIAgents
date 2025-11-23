@@ -115,7 +115,7 @@ export default function JsonBarChart({ days, url, instanceFilter = null }) {
     const labels = series.map((s) => s.instance);
     const values = series.map((s) => s.avg);
 
-    const palette = ["#4f46e5", "#06b6d4", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6"];
+    const palette = ["#6366f1", "#06b6d4", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6"];
 
     const hexToRgba = (hex, a = 0.85) => {
       const h = hex.replace("#", "");
