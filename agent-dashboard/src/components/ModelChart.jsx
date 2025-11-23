@@ -34,6 +34,9 @@ export default function ModelChart({ timeseries = [] }) {
   const labels = series.map((p) => p.x ?? "");
   const values = series.map((p) => (Number.isFinite(p.y) ? p.y : Number(p.y) || 0));
 
+  const labelKey = labels.join("|");
+  const valueKey = values.join(",");
+
   // memoize data/options so chartjs-2 updates correctly when deps change
   const data = useMemo(() => ({
     labels,
@@ -42,7 +45,7 @@ export default function ModelChart({ timeseries = [] }) {
         label: "Daily cost",
         data: values,
         borderColor: "#4f46e5",         // deep indigo
-        backgroundColor: "rgba(79, 70, 229, 0.2)", 
+        backgroundColor: "rgba(79, 70, 229, 0.2)",
         pointBackgroundColor: "#06b6d4", // aqua
         pointBorderColor: "#06b6d4",
         tension: 0.3,
@@ -50,7 +53,8 @@ export default function ModelChart({ timeseries = [] }) {
         pointRadius: 4,
       }
     ],
-  }), [labels.join("|"), values.join(",")]); // join used to create stable primitive deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [labelKey, valueKey]); // join used to create stable primitive deps
 
   const options = useMemo(() => ({
     responsive: true,
@@ -70,7 +74,7 @@ export default function ModelChart({ timeseries = [] }) {
   }), []);
 
   return (
-    <div style={{ width: "100%", height: 360 }}>
+    <div className="chart-wrapper">
       <Line data={data} options={options} />
     </div>
   );

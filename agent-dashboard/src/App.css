@@ -21,19 +21,14 @@ body {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
-
-/*h1 {
-  background: linear-gradient(135deg, #4f46e5, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}*/
 
 .description {
   color: "#666";
@@ -44,6 +39,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -113,10 +109,40 @@ body {
   margin-top: 50px;
 }
 
-.form-control, .form-control:focus {
+.form-control,
+.form-control:focus {
   color: #777;
 }
 
-.form-select, .form-select:focus {
+.form-select,
+.form-select:focus {
   color: #777;
+}
+
+/* New styles extracted from inline styles */
+
+.app-container {
+  font-family: "Inter", Arial, sans-serif;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.app-content {
+  width: 85%;
+  margin: 0 auto;
+}
+
+.header-container {
+  max-width: 1100px;
+}
+
+.dashboard-container {
+  max-width: 1100px;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 360px;
 }

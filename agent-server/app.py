@@ -1,7 +1,16 @@
+import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from dotenv import load_dotenv
+
+# Load env vars
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Cloud Cost Agent API")
 
@@ -17,18 +26,18 @@ app.add_middleware(
 class AgentRequest(BaseModel):
     project_id: str
     days: int = 30
-    pod: str = "prod"
 
-# Assume these exist in your notebook/env
-from cloud_cost_agent import run_analysis_with_agent
+# Import after configuring logging/env
+from agent_runner import run_analysis_with_agent
 
 @app.post("/run-agent")
 async def run_agent(req: AgentRequest):
-    # If you have sequential_analysis_v2 that returns result dictionary:
+    logger.info(f"Received request for project: {req.project_id}, days: {req.days}")
     try:
         res = await run_analysis_with_agent(req.project_id, req.days)
         return res
     except Exception as e:
+        logger.error(f"Agent error: {e}")
         raise HTTPException(status_code=500, detail=f"agent error: {e}")
 
 # Optional: simple health check

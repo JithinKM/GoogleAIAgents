@@ -18,7 +18,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
  *  - url: path to JSONL file (default: /data/metrics.jsonl)
  *  - instanceFilter: optional array of instance names to include (defaults to all found)
  */
-export default function JsonBarChart({days, url, instanceFilter = null}) {
+export default function JsonBarChart({ days, url, instanceFilter = null }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +26,7 @@ export default function JsonBarChart({days, url, instanceFilter = null}) {
   // fetch and parse jsonl
   useEffect(() => {
     let mounted = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
     fetch(url)
@@ -114,9 +115,9 @@ export default function JsonBarChart({days, url, instanceFilter = null}) {
     const labels = series.map((s) => s.instance);
     const values = series.map((s) => s.avg);
 
-    const palette = ["#4f46e5","#06b6d4","#10b981","#f59e0b","#ec4899","#8b5cf6"];
+    const palette = ["#4f46e5", "#06b6d4", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6"];
 
-    const hexToRgba = (hex, a=0.85) => {
+    const hexToRgba = (hex, a = 0.85) => {
       const h = hex.replace("#", "");
       const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
       const bigint = parseInt(full, 16);
@@ -133,7 +134,7 @@ export default function JsonBarChart({days, url, instanceFilter = null}) {
       labels,
       datasets: [
         {
-          label: `Avg CPU util (${fromDate.toISOString().slice(0,10)} → ${toDate.toISOString().slice(0,10)})`,
+          label: `Avg CPU util (${fromDate.toISOString().slice(0, 10)} → ${toDate.toISOString().slice(0, 10)})`,
           data: values,
           backgroundColor,
           borderColor,
@@ -153,9 +154,11 @@ export default function JsonBarChart({days, url, instanceFilter = null}) {
     },
     plugins: {
       legend: { display: false },
-      tooltip: { callbacks: {
-        label: (context) => `${context.parsed.y}%`
-      }}
+      tooltip: {
+        callbacks: {
+          label: (context) => `${context.parsed.y}%`
+        }
+      }
     }
   }), []);
 
@@ -164,7 +167,7 @@ export default function JsonBarChart({days, url, instanceFilter = null}) {
   if (!aggregated.series || aggregated.series.length === 0) return <div className="text-muted">No metric data found for the selected window.</div>;
 
   return (
-    <div style={{ width: "100%", height: 360 }}>
+    <div className="chart-wrapper">
       <Bar data={data} options={options} />
     </div>
   );

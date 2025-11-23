@@ -4,21 +4,9 @@ import Dashboard from "./components/Dashboard";
 
 export default function App() {
   return (
-      <div
-        style={{
-          fontFamily: "Inter, Arial, sans-serif",
-          padding: 24,
-          display: "flex",
-          justifyContent: "center"
-        }}
-      >
-      <div
-        style={{
-          width: "85%",
-          margin: "0 auto"
-        }}
-      >
-{/*      <img
+    <div className="app-container">
+      <div className="app-content">
+        {/*      <img
         src="/banner.png"
         alt="Dashboard Banner"
         style={{
@@ -29,17 +17,17 @@ export default function App() {
           objectFit: "cover"
         }}
       />*/}
-      <header className="container my-5 text-center" style={{ maxWidth: 1100 }}>
-        <h1>Project Dashboard</h1>
-        <p className="description">
-          Select the project and the number of days you want to check for cost anomalies.
-          The Cloud Cost Agent will analyze the spend, highlight anomalies,
-          identify root causes, suggest follow-up actions, and even create a ticket if needed.
-        </p>
-      </header>
+        <header className="container my-5 text-center header-container">
+          <h1>Project Dashboard</h1>
+          <p className="description">
+            Select the project and the number of days you want to check for cost anomalies.
+            The Cloud Cost Agent will analyze the spend, highlight anomalies,
+            identify root causes, suggest follow-up actions, and even create a ticket if needed.
+          </p>
+        </header>
 
-      <Dashboard />
+        <Dashboard />
+      </div>
     </div>
-  </div>
   );
 }

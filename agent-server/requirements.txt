@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+pandas
+numpy
+google-genai
+python-dotenv
+pytest
+pytest-asyncio
+google-adk
